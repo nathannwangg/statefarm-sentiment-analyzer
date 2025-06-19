@@ -1,0 +1,7 @@
+praw
+nltk
+streamlit
+matplotlib
+wordcloud
+fastapi[all]
+uvicorn

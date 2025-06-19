@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  sentiment-app:
+    build: .
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env           # load your Reddit creds here
+    volumes:
+      - .:/app          # live‐reload code during hackathon
+      - ./data:/app/data  # persist SQLite if you choose to store on disk

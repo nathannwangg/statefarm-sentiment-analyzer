@@ -1,0 +1,40 @@
+# .github/workflows/docker-test.yml
+name: Test Docker Setup
+
+on:
+  push:
+    paths:
+      - '**'
+  pull_request:
+    paths:
+      - '**'
+
+jobs:
+  docker-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create dummy .env for CI
+        run: |
+          cat > .env <<EOF
+          REDDIT_CLIENT_ID=ci
+          REDDIT_CLIENT_SECRET=ci
+          REDDIT_USER_AGENT=CI-Runner
+          EOF
+
+      - name: Build & start services
+        run: docker compose up -d --build
+
+      - name: Wait for Streamlit
+        run: |
+          timeout 60 bash -c 'until curl -s http://localhost:8501 > /dev/null; do sleep 1; done'
+
+      - name: Smoke test UI
+        # Exit 0 if we get any 2xx response, else fail
+        run: curl --fail http://localhost:8501
+
+      - name: Tear down services
+        run: docker compose down

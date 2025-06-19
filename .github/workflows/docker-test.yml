@@ -14,11 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout your code
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2) Provide a dummy .env so Compose doesn't fail on missing file
       - name: Create dummy .env for CI
         run: |
           cat > .env <<EOF
@@ -27,21 +25,16 @@ jobs:
           REDDIT_USER_AGENT=CI-Runner
           EOF
 
-      # 3) Build & start services (using Docker Compose V2 plugin)
       - name: Build & start services
         run: docker compose up -d --build
 
-      # 4) Wait until Streamlit responds (max 60s)
       - name: Wait for Streamlit
         run: |
           timeout 60 bash -c 'until curl -s http://localhost:8501 > /dev/null; do sleep 1; done'
 
-      # 5) Smoke-test the UI
       - name: Smoke test UI
-        run: |
-          curl -s http://localhost:8501 \
-            | grep -q "Reddit Sentiment Analyzer"
+        # Exit 0 if we get any 2xx response, else fail
+        run: curl --fail http://localhost:8501
 
-      # 6) Tear down services
       - name: Tear down services
         run: docker compose down

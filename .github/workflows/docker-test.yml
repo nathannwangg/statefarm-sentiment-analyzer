@@ -18,21 +18,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2) Build & start services using the Compose V2 plugin
+      # 2) Provide a dummy .env so Compose doesn't fail on missing file
+      - name: Create dummy .env for CI
+        run: |
+          cat > .env <<EOF
+          REDDIT_CLIENT_ID=ci
+          REDDIT_CLIENT_SECRET=ci
+          REDDIT_USER_AGENT=CI-Runner
+          EOF
+
+      # 3) Build & start services (using Docker Compose V2 plugin)
       - name: Build & start services
         run: docker compose up -d --build
 
-      # 3) Wait until Streamlit responds (max 60s)
+      # 4) Wait until Streamlit responds (max 60s)
       - name: Wait for Streamlit
         run: |
           timeout 60 bash -c 'until curl -s http://localhost:8501 > /dev/null; do sleep 1; done'
 
-      # 4) Smoke-test the UI
+      # 5) Smoke-test the UI
       - name: Smoke test UI
         run: |
           curl -s http://localhost:8501 \
             | grep -q "Reddit Sentiment Analyzer"
 
-      # 5) Tear down services
+      # 6) Tear down services
       - name: Tear down services
         run: docker compose down

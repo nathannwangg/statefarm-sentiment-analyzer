@@ -1,0 +1,39 @@
+# .github/workflows/docker-test.yml
+name: Test Docker Setup
+
+# Trigger on every push or PR to any file
+on:
+  push:
+    paths:
+      - '**'
+  pull_request:
+    paths:
+      - '**'
+
+jobs:
+  docker-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Check out your code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2) Build and bring up your Docker Compose services
+      - name: Build & start services
+        run: docker-compose up -d --build
+
+      # 3) Wait until Streamlit is responding (max 60s)
+      - name: Wait for Streamlit
+        run: |
+          timeout 60 bash -c 'until curl -s http://localhost:8501 > /dev/null; do sleep 1; done'
+
+      # 4) Smoke-test the UI
+      - name: Smoke test UI
+        run: |
+          curl -s http://localhost:8501 \
+            | grep -q "Reddit Sentiment Analyzer"
+
+      # 5) Tear down containers when done
+      - name: Tear down services
+        run: docker-compose down

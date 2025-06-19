@@ -1,4 +1,4 @@
-# SF-SENTI: Subreddit Sentiment Analyzer
+# SF-SENTI: Subreddit Emotion Network & Textual Insights
 
 Welcome to **SENTI** — a Reddit sentiment analysis tool built for rapid insights into community mood and engagement. SENTI scrapes posts and comments from any subreddit, performs sentiment analysis, and visualizes the results in an interactive dashboard.
 

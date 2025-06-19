@@ -98,5 +98,9 @@ class Storage:
             )
             """
         )
+
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_utc)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_posts_label   ON posts(label)")
+        
         con.commit()
         con.close()

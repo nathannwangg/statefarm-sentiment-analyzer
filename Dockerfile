@@ -4,13 +4,15 @@ FROM python:3.11-slim
 # 2) Set working dir
 WORKDIR /app
 
-# 3) Install system deps for C extensions (WordCloud, Pillow, etc.)
+# 3) Install system deps for C extensions (WordCloud, Pillow, etc.) + sqlite
 RUN apt-get update && \
     apt-get install -y \
       build-essential \
       python3-dev \
       libfreetype6-dev \
-      pkg-config && \
+      pkg-config \
+      sqlite3 \
+      libsqlite3-dev && \
     rm -rf /var/lib/apt/lists/*
 
 # 4) Copy & install Python deps (cache-friendly)

@@ -1,3 +1,6 @@
+# keep SQLite and other local artifacts out of Git
+reddit_data.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

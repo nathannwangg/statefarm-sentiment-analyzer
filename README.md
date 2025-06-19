@@ -48,4 +48,13 @@ Reddit communities often reflect evolving public sentiment. SENTI helps users:
 
 ```bash
 git clone https://github.com/nathannwangg/statefarm-sentiment-analyzer.git
+```
 
+## Quickstart
+
+```bash
+git clone <this-repo>
+cd <this-repo>
+cp .env.example .env   # fill in your REDDIT_* creds
+docker-compose up --build
+```

@@ -81,20 +81,24 @@ class Storage:
 
     # ---------- private ----------
     def _init_db(self):
-        """Create the DB + table if needed."""
+        """Create the DB + table if needed, and add summary columns if missing."""
         con = sqlite3.connect(self.db_path)
         cur = con.cursor()
+
+        # 1) Create table with new columns (for fresh installs)
         cur.execute(
             """
             CREATE TABLE IF NOT EXISTS posts (
-                id           TEXT PRIMARY KEY,
-                title        TEXT,
-                body         TEXT,
-                comments     TEXT,
-                created_utc  INTEGER,
-                permalink    TEXT,
-                sentiment    REAL,
-                label        TEXT
+                id               TEXT PRIMARY KEY,
+                title            TEXT,
+                body             TEXT,
+                comments         TEXT,
+                created_utc      INTEGER,
+                permalink        TEXT,
+                sentiment        REAL,
+                label            TEXT,
+                text_summary     TEXT,
+                comment_summary  TEXT
             )
             """
         )

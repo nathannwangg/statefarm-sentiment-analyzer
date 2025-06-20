@@ -23,8 +23,8 @@ if not all([CLIENT_ID, CLIENT_SECRET, USERNAME, PASSWORD]):
 
 #Configure parameters
 SUBREDDIT = "Insurance"
-KEYWORDS = ["State Farm"]
-POST_LIMIT = 500 #replace when deploying
+KEYWORDS = ["State Farm", "StateFarm", "SF"]
+POST_LIMIT = 500 
 FIELDNAMES = ["subreddit", "type", "post_id", "comment_id", "title", "body", "url"]
 
 def get_reddit_client():
@@ -45,14 +45,16 @@ def fetch_posts(subreddit_name: str, limit: int = 100):
     subreddit = reddit.subreddit(subreddit_name)
     results = []
     for sub in subreddit.top(time_filter="month", limit=limit):
-        results.append({
-            "id": sub.id,
-            "title": sub.title,
-            "body": sub.selftext,
-            "created_utc": sub.created_utc, #timestamp
-            "permalink": f"https://reddit.com{sub.permalink}",
-            "comments": [c.body for c in sub.comments if hasattr(c, "body")]
-        })
+        post_text = (sub.title or "") + " " + (sub.selftext or "")
+        if any(keyword.lower() in post_text.lower() for keyword in KEYWORDS):
+            results.append({
+                "id": sub.id,
+                "title": sub.title,
+                "body": sub.selftext,
+                "created_utc": sub.created_utc, #timestamp
+                "permalink": f"https://reddit.com{sub.permalink}",
+                "comments": [c.body for c in sub.comments if hasattr(c, "body")]
+            })
     return results
 
 def run_ingestion(subreddit: str = "Insurance", limit: int = 100):
@@ -60,9 +62,8 @@ def run_ingestion(subreddit: str = "Insurance", limit: int = 100):
     print(f"{len(raw_data)} posts pulled")
     enriched_data= analyze_sentiments(raw_data)
     store.save(enriched_data)
-
     print(f"Saved {len(enriched_data)} posts to {store.db_path}")
 
 
 # Run this function to populate database
-#run_ingestion(subreddit=SUBREDDIT, limit=POST_LIMIT)
+run_ingestion(subreddit=SUBREDDIT, limit=POST_LIMIT)

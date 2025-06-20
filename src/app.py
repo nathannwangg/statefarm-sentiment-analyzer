@@ -16,9 +16,8 @@ st.set_page_config(
 
 
 def display_single_post(post, col):
-    # Use "sentiment" as main field, fallback to 0 if missing
     sentiment_score = post.get("sentiment", post.get("score", 0))
-    scaled_score = int((sentiment_score + 1) * 50)  # Convert [-1,1] → [0,100]
+    scaled_score = int((sentiment_score + 1) * 50)
     score_color = "#4CAF50" if scaled_score >= 50 else "#FF5252"
     post_id = post.get("id", "No ID")
     title = post.get("title", "No Title")
@@ -60,7 +59,6 @@ def main():
     negative_posts = requests.get("http://api:8000/top-negative").json()
     
     summary = requests.get("http://api:8000/sentiment-summary").json()
-    #analyzed = requests.get("http://api:8000/get-daily-summary").json()
 
     with tab1:
         st.markdown("<h3 style='text-align: center; color: #FF6961;'>Top 5 Posts</h3>", unsafe_allow_html=True)

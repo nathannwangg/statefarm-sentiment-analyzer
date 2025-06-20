@@ -1,4 +1,3 @@
-# src/storage.py
 import os
 import sqlite3
 from datetime import datetime
@@ -13,7 +12,6 @@ class Storage:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._init_db()
 
-    # ---------- writer ----------
     def save(self, records: list[dict]):
         """Insert or ignore a batch of Reddit posts/comments."""
         con = sqlite3.connect(self.db_path)
@@ -42,7 +40,6 @@ class Storage:
         con.commit()
         con.close()
 
-    # ---------- readers ----------
     def get_daily_counts(self, days: int = 7):
         """Return sentiment counts per day (last `days`)."""
         con = sqlite3.connect(self.db_path)
@@ -104,8 +101,6 @@ class Storage:
         con = sqlite3.connect(self.db_path)
         cur = con.cursor()
 
-        # For "Positive", we want highest scores (DESC).
-        # For "Negative", we want lowest scores (ASC).
         order = "DESC" if label == "Positive" else "ASC"
 
         query = f"""
@@ -127,7 +122,6 @@ class Storage:
     def get_post_by_id(self, post_id: str):
         """Return a single post by its ID."""
         con = sqlite3.connect(self.db_path)
-        # Return a dictionary-like object
         con.row_factory = sqlite3.Row
         cur = con.cursor()
         cur.execute(
@@ -157,13 +151,11 @@ class Storage:
         con.commit()
         con.close()
 
-    # ---------- private ----------
     def _init_db(self):
         """Create the DB + table if needed, and add summary columns if missing."""
         con = sqlite3.connect(self.db_path)
         cur = con.cursor()
 
-        # 1) Create table with new columns (for fresh installs)
         cur.execute(
             """
             CREATE TABLE IF NOT EXISTS posts (

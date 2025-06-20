@@ -22,6 +22,5 @@ services:
     volumes:
       - .:/app
     environment:
-      # Add src/ so "import ingestion" etc resolve to /app/src/ingestion.py
       - PYTHONPATH=/app/src
       - DB_PATH=/app/data/reddit_data.db

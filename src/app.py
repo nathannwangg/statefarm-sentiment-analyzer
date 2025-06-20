@@ -9,7 +9,7 @@ from collections import Counter
 import requests
 
 st.set_page_config(
-    page_title="Reddit Sentiment Analyzer",
+    page_title="SF-SENTI",
     page_icon="💬",
     layout="wide",
 )
@@ -20,22 +20,25 @@ def display_single_post(post, col):
     sentiment_score = post.get("sentiment", post.get("score", 0))
     scaled_score = int((sentiment_score + 1) * 50)  # Convert [-1,1] → [0,100]
     score_color = "#4CAF50" if scaled_score >= 50 else "#FF5252"
-
+    post_id = post.get("id", "No ID")
     title = post.get("title", "No Title")
     body = post.get("body", "No Content Available")
     text_summary = post.get("text_summary", "No Summary Available")
     comment_summary = post.get("comment_summary", "No Comment Summary Available")
-
+    if text_summary == "No Summary Available":
+        summary_requests = requests.get(f"http://api:8000//summarize/{post_id}").json()
+        text_summary = summary_requests.get("text_summary")
+        comment_summary = summary_requests.get("comment_summary")
+    
     with col.container():
         st.markdown(f"""
         <div style='position: relative; padding: 15px; border-radius: 10px; background-color: #F5F5F5; margin-bottom: 15px;'>
             <div style='position: absolute; top: 10px; right: 10px; width: 60px; height: 60px; border-radius: 50%; background-color: {score_color}; display: flex; justify-content: center; align-items: center; color: white; font-size: 18px; font-weight: bold;'>{scaled_score}</div>
             <h4 style='color: #333333; margin-bottom: 10px;'>{title}</h4>
-            <p style='color: #666666; font-size: 14px; margin-bottom: 10px;'>{body}</p>
         </div>
         """, unsafe_allow_html=True)
 
-        with st.expander("💬 Open Comments"):
+        with st.expander("💬 Open Summary"):
             st.markdown(f"**📝 Post Summary:** {text_summary}")
             st.markdown(f"**💡 Comment Summary:** {comment_summary}")
 
@@ -44,7 +47,7 @@ def main():
     st.markdown(
         """
         <div style="text-align: center; background-color: #FF6961; padding: 20px; border-radius: 10px;">
-            <h1 style="font-size: 60px; color: white;">Reddit Sentiment Analyzer</h1>
+            <h1 style="font-size: 60px; color: white;">SF-SENTI</h1>
         </div>
         """,
         unsafe_allow_html=True,

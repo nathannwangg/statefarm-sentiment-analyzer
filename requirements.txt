@@ -5,4 +5,5 @@ matplotlib
 wordcloud
 fastapi[all]
 uvicorn
-python-dotenv
+google.generativeai
+dotenv

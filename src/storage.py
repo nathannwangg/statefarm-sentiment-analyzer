@@ -109,7 +109,7 @@ class Storage:
         order = "DESC" if label == "Positive" else "ASC"
 
         query = f"""
-            SELECT title, body, permalink, sentiment
+            SELECT id, title, body, permalink, sentiment
             FROM posts
             WHERE label = ? AND created_utc >= strftime('%s', 'now', ?)
             ORDER BY sentiment {order}
@@ -123,6 +123,39 @@ class Storage:
         rows = cur.fetchall()
         con.close()
         return rows
+
+    def get_post_by_id(self, post_id: str):
+        """Return a single post by its ID."""
+        con = sqlite3.connect(self.db_path)
+        # Return a dictionary-like object
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        cur.execute(
+            """
+            SELECT id, title, body, comments, text_summary, comment_summary
+            FROM posts
+            WHERE id = ?
+            """,
+            (post_id,),
+        )
+        row = cur.fetchone()
+        con.close()
+        return row
+
+    def update_summaries(self, post_id: str, text_summary: str, comment_summary: str):
+        """Update the text and comment summaries for a post."""
+        con = sqlite3.connect(self.db_path)
+        cur = con.cursor()
+        cur.execute(
+            """
+            UPDATE posts
+            SET text_summary = ?, comment_summary = ?
+            WHERE id = ?
+            """,
+            (text_summary, comment_summary, post_id),
+        )
+        con.commit()
+        con.close()
 
     # ---------- private ----------
     def _init_db(self):

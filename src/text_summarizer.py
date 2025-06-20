@@ -5,9 +5,9 @@ import os
 
 # Set up Gemini API key and load model
 load_dotenv()
-API_KEY = os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel("gemini-2.0-flash")
+# API_KEY = os.getenv("GOOGLE_API_KEY")
+# genai.configure(api_key=API_KEY)
+# model = genai.GenerativeModel("gemini-2.0-flash")
 
 
 def summarize_post(title, body):

@@ -1,12 +1,27 @@
-version: "3.8"
-
 services:
   sentiment-app:
     build: .
     ports:
       - "8501:8501"
     env_file:
-      - .env           # load your Reddit creds here
+      - .env
     volumes:
-      - .:/app          # live‐reload code during hackathon
-      - ./data:/app/data  # persist SQLite if you choose to store on disk
+      - .:/app
+      - ./data:/app/data
+    environment:
+      - DB_PATH=/app/data/reddit_data.db
+
+  api:
+    build: .
+    working_dir: /app
+    command: uvicorn --reload --host 0.0.0.0 --port 8000 src.api:app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    environment:
+      # Add src/ so "import ingestion" etc resolve to /app/src/ingestion.py
+      - PYTHONPATH=/app/src
+      - DB_PATH=/app/data/reddit_data.db

@@ -1,4 +1,3 @@
-# PRAW logic
 import os
 import praw
 import os
@@ -6,10 +5,8 @@ from dotenv import load_dotenv
 from storage import Storage
 from analysis import analyze_sentiments
 
-# Initialize SQLite storage
 store = Storage()
 
-# Load credentials from .env file
 load_dotenv()
 CLIENT_ID = os.getenv("REDDIT_CLIENT_ID")
 CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET")
@@ -17,7 +14,6 @@ USERNAME = os.getenv("REDDIT_USERNAME")
 PASSWORD = os.getenv("REDDIT_PASSWORD")
 USER_AGENT = f"MyRedditScraper/0.0.1 by u/{USERNAME}"
 
-# Validate environment variables
 if not all([CLIENT_ID, CLIENT_SECRET, USERNAME, PASSWORD]):
     raise Exception("Missing one or more environment variables. Check your .env file.")
 
@@ -64,6 +60,4 @@ def run_ingestion(subreddit: str = "Insurance", limit: int = 100):
     store.save(enriched_data)
     print(f"Saved {len(enriched_data)} posts to {store.db_path}")
 
-
-# Run this function to populate database
 run_ingestion(subreddit=SUBREDDIT, limit=POST_LIMIT)

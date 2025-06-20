@@ -4,10 +4,8 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from collections import Counter
 import nltk
 
-# Ensure VADER lexicon is downloaded
 nltk.download('vader_lexicon')
 
-# Initialize VADER
 sid = SentimentIntensityAnalyzer()
 
 # Analyze sentiment of posts
@@ -76,7 +74,6 @@ def get_top_sentiment_posts(analyzed_posts: list[dict]) -> tuple[list[dict], lis
 
     return top_positive, top_negative
 
-# Bonus: Emotion bar chart
 def plot_emotion_bar(summary):
     fig, ax = plt.subplots()
     categories = ["Positive", "Neutral", "Negative"]
@@ -93,7 +90,6 @@ def plot_emotion_bar(summary):
         ax.text(width + 1, bar.get_y() + bar.get_height()/2, f"{int(width)}%", va='center')
     st.pyplot(fig)
 
-# Bonus: Word cloud
 def plot_wordcloud(posts):
     all_text = " ".join(post["body"] for post in posts)
     wc = WordCloud(width=600, height=300, background_color="white").generate(all_text)

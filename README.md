@@ -116,9 +116,11 @@ GOOGLE_GEMINI_API_KEY=your_api_key
 | GET    | `/api/sentiment-summary`            | Returns a summary of all sentiments       |
 | GET    | `/api/get_top_positive`             | Top 5 positive posts                      |
 | GET    | `/api/get_top_positive`             | Top 5 negative posts                      |
-| POST   | `/api/summarize{post_id}`           | Retrieves summaries of post and comments  |
+| GET    | `/api/summarize{post_id}`           | Retrieves summaries of post and comments  |
 
-
+When running app in container, visit
+http://127.0.0.1:8000/docs/
+for API docs
 
 ## Contributing
 
